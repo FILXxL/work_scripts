@@ -1,0 +1,1 @@
+c:\client32\setup.exe -silent -nowait -ignoreSysPrereqs -ignorePrereqFailure -waitForCompletion -force "ORACLE_HOME=C:\Oracle\Product\19.0.0\Client32" "ORACLE_BASE=C:\Oracle" "oracle.install.IsBuiltInAccount=true" "oracle.install.client.installType=Runtime"

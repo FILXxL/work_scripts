@@ -173,7 +173,7 @@ EXIT
 
     ::Mein_Cockpit_Link
     set SavePath="%HOMEPATH%\Desktop"
-    set URL="https://lhrportal.oeamtc.at/"
+    set URL="https://lhrportal.oeamtc.at/self/"
     set FileName="%SavePath%\MeinCockpit.url"
 
     (

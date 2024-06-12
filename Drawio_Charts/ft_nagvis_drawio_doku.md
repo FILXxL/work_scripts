@@ -12,7 +12,8 @@
         - KTN
 
     ORBiS
-        - Terminalserver 
+        - Terminalserver (p1,p2,p3)
         - Tomcat am P1
         - Tablespace auf lena
+        - Orbis Jobs auf lena
         - FT-Portal ProdServices Docker

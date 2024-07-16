@@ -64,12 +64,12 @@ EXIT
         goto KKMLINK
     )
     if /I %selection% EQU 7 (
-    if /I %zentrum% EQU 3000 (
-        goto SHARES_TEESDORF
-    ) else (
-        goto SHARES_PROVINZ
+        if /I %zentrum% EQU 3000 (
+            goto SHARES_TEESDORF
+        ) else (
+            goto SHARES_PROVINZ
+        )
     )
-)
 
     if /I %selection% EQU 0 (
         goto ENDE

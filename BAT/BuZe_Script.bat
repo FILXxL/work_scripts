@@ -38,6 +38,7 @@ EXIT
     echo [4] Scanordner verknuepfen
     echo [5] Desktoplinks erstellen(LHR,CT Online, BRZ Portal)
     echo [6] KKM Verknuepfung
+    echo [7] M:,N: Laufwerke verbinden
     echo [0] Verlassen
     echo =========================
     echo:
@@ -62,6 +63,11 @@ EXIT
     if /I %selection% EQU 6 (
         goto KKMLINK
     )
+     if /I %selection% EQU 7 (
+        if /I %zentrum% EQU 3000
+        ( goto SHARES_TEESDORF ) else ( goto SHARES_PROVINZ )
+    )
+
     if /I %selection% EQU 0 (
         goto ENDE
     )
@@ -74,49 +80,49 @@ EXIT
         set zentrum=3110
         set kkm=n3110
         set scanfolder="\\atlas\ftgroups\3110\Scan Dateien"
-        goto SHARES_PROVINZ
+        goto MAINMENU
     )
     if /I "%zentrumskuerzel%" EQU "MLK" (
         set zentrum=3130
         set kkm=n3130
         set scanfolder="nicht_vorhanden"
-        goto SHARES_PROVINZ
+        goto MAINMENU
     )
     if /I "%zentrumskuerzel%" EQU "OOE" (
         set zentrum=3140
         set kkm=n3140
         set scanfolder="\\atlas\ftgroups\3140\SCAN-Dateien"
-        goto SHARES_PROVINZ
+        goto MAINMENU
     )
     if /I "%zentrumskuerzel%" EQU "TRL" (
         set zentrum=3160
         set kkm=n3160
         set scanfolder="\\atlas\ftgroups\3160\SCAN-Dateien"
-        goto SHARES_PROVINZ
+        goto MAINMENU
     )
     if /I "%zentrumskuerzel%" EQU "LEB" (
         set zentrum=3180
         set kkm=n3180
         set scanfolder="\\atlas\ftgroups\3180\SCAN-Dateien"
-        goto SHARES_PROVINZ
+        goto MAINMENU
     )
     if /I "%zentrumskuerzel%" EQU "KAL" (
         set zentrum=3280
         set kkm=n3280
         set scanfolder="nicht_vorhanden"
-        goto SHARES_PROVINZ
+        goto MAINMENU
     )
     if /I "%zentrumskuerzel%" EQU "KTN" (
         set zentrum=3190
         set kkm=n3190
         set scanfolder="\\atlas\ftgroups\3190\Scan"
-        goto SHARES_PROVINZ
+        goto MAINMENU
     )
     if /I "%zentrumskuerzel%" EQU "TDF" (
         set zentrum=3000
         set kkm=n3100
         set scanfolder="\\n3000\tt\Scan-Dateien"
-        goto SHARES_TEESDORF
+        goto MAINMENU
     )
 :PRINTERS
     :: Frage ob ein Drucker verbunden werden soll

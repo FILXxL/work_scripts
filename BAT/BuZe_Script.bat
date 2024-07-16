@@ -43,7 +43,7 @@ EXIT
     echo =========================
     echo:
     set selection=0
-    set /p selection="Was moechtest du tun? (1-6)"
+    set /p selection="Was moechtest du tun? (1-7)"
 
     if /I %selection% EQU 1 (
         goto DRUCKER_VERBINDEN
@@ -63,10 +63,13 @@ EXIT
     if /I %selection% EQU 6 (
         goto KKMLINK
     )
-     if /I %selection% EQU 7 (
-        if /I %zentrum% EQU 3000
-        ( goto SHARES_TEESDORF ) else ( goto SHARES_PROVINZ )
+    if /I %selection% EQU 7 (
+    if /I %zentrum% EQU 3000 (
+        goto SHARES_TEESDORF
+    ) else (
+        goto SHARES_PROVINZ
     )
+)
 
     if /I %selection% EQU 0 (
         goto ENDE

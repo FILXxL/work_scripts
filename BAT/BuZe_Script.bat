@@ -180,6 +180,12 @@ EXIT
 
 :DESKTOP_LINKS
 
+    ::Outlook_Link
+    set SavePath="%HOMEPATH%\Desktop"
+    set SourcePath="C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs"
+    copy %SourcePath%\outlook.lnk %SavePath%
+    echo "Outlook link wurde erstellt"
+
     ::Mein_Cockpit_Link
     set SavePath="%HOMEPATH%\Desktop"
     set URL="https://lhrportal.oeamtc.at/self/"

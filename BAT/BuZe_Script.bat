@@ -169,7 +169,11 @@ EXIT
     echo "Vertriebsordner als Laufwerk %vertrieb_buchstabe% eingerichtet."
     goto MAINMENU
 
-:SCAN_EINRICHTEN 
+:SCAN_EINRICHTEN
+    if /I "%scanfolder%" EQU "nicht_vorhanden" (
+        echo "Fuer dieses Zentrum gibt es keinen Scanordner"
+        goto MAINMENU
+    )
     set /p scan_buchstabe="Welcher Laufwerksbuchstabe fuer den ScanOrdner?:"
     net use %scan_buchstabe%: /delete
     net use %scan_buchstabe%: %scanfolder%

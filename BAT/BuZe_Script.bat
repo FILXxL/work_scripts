@@ -39,6 +39,7 @@ EXIT
     echo [5] Desktoplinks erstellen(LHR,CT Online, BRZ Portal)
     echo [6] KKM Verknuepfung
     echo [7] M:,N: Laufwerke verbinden
+    echo [8] Zusaetzlicher Zentrumsordner
     echo [0] Verlassen
     echo =========================
     echo:
@@ -295,7 +296,7 @@ EXIT
             net use %zus_zentrum_buchstabe%: "\\atlas\ftgroups\%zus_zentrum%"
             echo "Zentrumsordner wurde als Laufwerk %zentrum_buchstabe% eingerichtet."
         )
-        
+
     goto MAINMENU
 
 

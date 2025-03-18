@@ -4,14 +4,16 @@ echo #########          Servus %USERNAME%!         ###########
 echo #####################################################
 echo #########         PC-Name: %COMPUTERNAME%         ###########
 echo #####################################################
+echo #########           Version 250318             #########
+echo #####################################################
 
 
 :: Zentrum wird durch Kuerzel ausgewaehlt 
 echo:
 echo =========================
 echo Welches Zentrum?
-echo:
-set /p zentrumskuerzel= "[SFD,MLK,OOE,TRL,LEB,KAL,KTN,TDF] :"
+echo [SFD,MLK,OOE,TRL,LEB,KAL,KTN,TDF]:
+set /p zentrumskuerzel= 
 goto ZENTRUMSAUSWAHL
 goto MAINMENU
 
@@ -25,12 +27,13 @@ EXIT
 
 :MAINMENU
     cls
-    echo #####################################################
-    echo #########          Servus %USERNAME%!         ###########
-    echo #####################################################
-    echo #########         PC-Name: %COMPUTERNAME%         ###########
-    echo #####################################################
-    echo #####################################################
+	echo #####################################################
+	echo #########          Servus %USERNAME%!         ###########
+	echo #####################################################
+	echo #########         PC-Name: %COMPUTERNAME%         ###########
+	echo #####################################################
+	echo #########           Version 250318             #########
+	echo #####################################################
     echo =========================
     echo [1] Drucker hinzufuegen
     echo [2] PDF-Drucker hinzufuegen
@@ -44,7 +47,7 @@ EXIT
     echo =========================
     echo:
     set selection=0
-    set /p selection="Was moechtest du tun? (1-7)"
+    set /p selection="Was moechtest du tun? (1-8)"
 
     if /I %selection% EQU 1 (
         goto DRUCKER_VERBINDEN
@@ -258,7 +261,7 @@ EXIT
 
     echo "Welcher Zentrumsordner soll hinzugefuegt werden?"
     echo "[SFD,MLK,OOE,TRL,LEB,KAL,KTN,TDF]"
-    set /p zus_zentrumskuerzel = ":"
+    set /p zus_zentrumskuerzel=
 
 ::Umwandlung Zusätzliches Zentrumskürzel
 
@@ -287,20 +290,18 @@ EXIT
         set zus_zentrum=3000
     )
     
-    echo %zus_zentrum%
     set /p zus_zentrum_buchstabe="Welcher Laufwerksbuchstabe fuer den Zentrumsordner?:"
 
         if /I %zus_zentrum% EQU 3000 (
             net use %zus_zentrum_buchstabe%: /delete
-            net use %zus_zentrum_buchstabe%: "\\n3000\tt"
-            echo "Zentrumsordner wurde als Laufwerk %zentrum_buchstabe% eingerichtet."
+            net use %zus_zentrum_buchstabe%: \\n3000\tt
+            echo "Zentrumsordner wurde als Laufwerk %zus_zentrum_buchstabe% eingerichtet."
         ) else (
             net use %zus_zentrum_buchstabe%: /delete
-            net use %zus_zentrum_buchstabe%: "\\atlas\ftgroups\%zus_zentrum%"
-            echo "Zentrumsordner wurde als Laufwerk %zentrum_buchstabe% eingerichtet."
+            net use %zus_zentrum_buchstabe%: \\atlas\ftgroups\%zus_zentrum%
+            echo "Zentrumsordner wurde als Laufwerk %zus_zentrum_buchstabe% eingerichtet."
         )
-        echo %zus_zentrum_buchstabe%
-        pause
+
     goto MAINMENU
 
 

@@ -70,6 +70,9 @@ EXIT
             goto SHARES_PROVINZ
         )
     )
+        if /I %selection% EQU 8 (
+        goto ZUSAETZLICHES_ZENTRUM_SHARE
+    ) 
 
     if /I %selection% EQU 0 (
         goto ENDE
@@ -192,7 +195,7 @@ EXIT
 
     ::Mein_Cockpit_Link
     set SavePath="%HOMEPATH%\Desktop"
-    set URL="https://lhrportal.oeamtc.at/self/"
+    set URL="https://lhrportal.oeamtc.at/Self/login"
     set FileName="%SavePath%\MeinCockpit.url"
 
     (
@@ -249,6 +252,9 @@ EXIT
 
     echo "Die Laufwerke M: und N: wurden eingerichtet."
     goto MAINMENU
+
+:ZUSAETZLICHES_ZENTRUM_SHARE
+
 
 
 :KKMLINK

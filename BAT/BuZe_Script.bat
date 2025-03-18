@@ -256,7 +256,9 @@ EXIT
 
 :ZUSAETZLICHES_ZENTRUM_SHARE
 
-    set /p zus_zentrumskuerzel = "Welcher Zentrumsordner soll hinzugefuegt werden?:"
+    echo "Welcher Zentrumsordner soll hinzugefuegt werden?"
+    echo "[SFD,MLK,OOE,TRL,LEB,KAL,KTN,TDF]"
+    set /p zus_zentrumskuerzel = ":"
 
 ::Umwandlung Zusätzliches Zentrumskürzel
 
@@ -285,6 +287,7 @@ EXIT
         set zus_zentrum=3000
     )
     
+    echo %zus_zentrum%
     set /p zus_zentrum_buchstabe="Welcher Laufwerksbuchstabe fuer den Zentrumsordner?:"
 
         if /I %zus_zentrum% EQU 3000 (

@@ -299,7 +299,8 @@ EXIT
             net use %zus_zentrum_buchstabe%: "\\atlas\ftgroups\%zus_zentrum%"
             echo "Zentrumsordner wurde als Laufwerk %zentrum_buchstabe% eingerichtet."
         )
-
+        echo %zus_zentrum_buchstabe%
+        pause
     goto MAINMENU
 
 

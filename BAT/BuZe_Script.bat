@@ -255,6 +255,48 @@ EXIT
 
 :ZUSAETZLICHES_ZENTRUM_SHARE
 
+    set /p zus_zentrumskuerzel = "Welcher Zentrumsordner soll hinzugefuegt werden?:"
+
+::Umwandlung Zusätzliches Zentrumskürzel
+
+    if /I "%zus_zentrumskuerzel%" EQU "SFD" (
+        set zus_zentrum=3110
+    )
+    if /I "%zus_zentrumskuerzel%" EQU "MLK" (
+        set zus_zentrum=3130
+    )
+    if /I "%zus_zentrumskuerzel%" EQU "OOE" (
+        set zus_zentrum=3140
+    )
+    if /I "%zus_zentrumskuerzel%" EQU "TRL" (
+        set zus_zentrum=3160
+    )
+    if /I "%zus_zentrumskuerzel%" EQU "LEB" (
+        set zus_zentrum=3180
+    )
+    if /I "%zus_zentrumskuerzel%" EQU "KAL" (
+        set zus_zentrum=3280
+    )
+    if /I "%zus_zentrumskuerzel%" EQU "KTN" (
+        set zus_zentrum=3190
+    )
+    if /I "%zus_zentrumskuerzel%" EQU "TDF" (
+        set zus_zentrum=3000
+    )
+    
+    set /p zus_zentrum_buchstabe="Welcher Laufwerksbuchstabe fuer den Zentrumsordner?:"
+
+        if /I %zus_zentrum% EQU 3000 (
+            net use %zus_zentrum_buchstabe%: /delete
+            net use %zus_zentrum_buchstabe%: "\\n3000\tt"
+            echo "Zentrumsordner wurde als Laufwerk %zentrum_buchstabe% eingerichtet."
+        ) else (
+            net use %zus_zentrum_buchstabe%: /delete
+            net use %zus_zentrum_buchstabe%: "\\atlas\ftgroups\%zus_zentrum%"
+            echo "Zentrumsordner wurde als Laufwerk %zentrum_buchstabe% eingerichtet."
+        )
+        
+    goto MAINMENU
 
 
 :KKMLINK

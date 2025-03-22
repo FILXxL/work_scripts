@@ -9,14 +9,51 @@ class BuzeGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("ÖAMTC Fahrtechnik Onboarding")
-        self.root.geometry("800x600")
+        self.root.geometry("900x700")  # Slightly larger window
         
-        # Variables
+        # Variables - these need to be initialized before using them
         self.zentrum = tk.StringVar()
         self.kkm = tk.StringVar()
         self.scanfolder = tk.StringVar()
         
-        # Add this printer dictionary
+        # Configure root grid weights for centering
+        self.root.grid_columnconfigure(0, weight=1)
+        self.root.grid_rowconfigure(0, weight=1)
+        
+        # Style configuration
+        style = ttk.Style()
+        style.configure('TButton', padding=10, font=('Helvetica', 10))
+        style.configure('Header.TLabel', font=('Helvetica', 16, 'bold'), padding=10)
+        style.configure('Subheader.TLabel', font=('Helvetica', 12), padding=5)
+        style.configure('TLabelframe', padding=15)
+        style.configure('TLabelframe.Label', font=('Helvetica', 11, 'bold'))
+        
+        # Create main frame with padding and configure its grid
+        main_frame = ttk.Frame(root, padding="30")
+        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        main_frame.grid_columnconfigure(0, weight=1)
+        
+        # Header - now centered
+        header_frame = ttk.Frame(main_frame)
+        header_frame.grid(row=0, column=0, pady=(0, 30))
+        ttk.Label(header_frame, text=f"Willkommen {os.getenv('USERNAME')}!",
+                 style='Header.TLabel').pack()
+        ttk.Label(header_frame, text=f"PC-Name: {os.getenv('COMPUTERNAME')}",
+                 style='Subheader.TLabel').pack()
+        
+        # Add this mapping for center names
+        self.center_names = {
+            'SFD': 'Saalfelden',
+            'MLK': 'Melk',
+            'OOE': 'Oberösterreich',
+            'TRL': 'Tirol',
+            'LEB': 'Lebring',
+            'KAL': 'Kalwang',
+            'KTN': 'Kärnten',
+            'TDF': 'Teesdorf'
+        }
+        
+        # Also need to add the printer dictionary back
         self.center_printers = {
             'SFD': [
                 'SFD-Drucker1',
@@ -62,40 +99,32 @@ class BuzeGUI:
             ]
         }
         
-        # Style configuration
-        style = ttk.Style()
-        style.configure('TButton', padding=5)
+        # Zentrum selection - centered
+        selection_frame = ttk.Frame(main_frame)
+        selection_frame.grid(row=1, column=0, pady=(0, 20))
+        selection_frame.grid_columnconfigure(0, weight=1)
+        selection_frame.grid_columnconfigure(1, weight=1)
         
-        # Create main frame
-        main_frame = ttk.Frame(root, padding="20")
-        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        ttk.Label(selection_frame, text="Zentrum auswählen:",
+                 font=('Helvetica', 11, 'bold')).grid(row=0, column=0, padx=5)
         
-        # Header
-        header_frame = ttk.Frame(main_frame)
-        header_frame.grid(row=0, column=0, columnspan=2, pady=(0, 20))
-        ttk.Label(header_frame, text=f"Willkommen {os.getenv('USERNAME')}!", 
-                 font=('Helvetica', 14, 'bold')).pack()
-        ttk.Label(header_frame, text=f"PC-Name: {os.getenv('COMPUTERNAME')}", 
-                 font=('Helvetica', 10)).pack()
-        
-        # Zentrum selection
-        ttk.Label(main_frame, text="Zentrum auswählen:", 
-                 font=('Helvetica', 10, 'bold')).grid(row=1, column=0, pady=5)
-        self.zentrum_combo = ttk.Combobox(main_frame, 
-                                   values=['SFD', 'MLK', 'OOE', 'TRL', 'LEB', 'KAL', 'KTN', 'TDF'],
-                                   state='readonly')
-        self.zentrum_combo.grid(row=1, column=1, pady=5)
+        # Create list of full names for dropdown
+        center_display_values = [f"{abbr} - {name}" for abbr, name in self.center_names.items()]
+        self.zentrum_combo = ttk.Combobox(selection_frame,
+                                   values=center_display_values,
+                                   state='readonly', width=30)
+        self.zentrum_combo.grid(row=0, column=1, padx=5)
         self.zentrum_combo.bind('<<ComboboxSelected>>', self.on_zentrum_select)
         
-        # Create buttons frame
-        buttons_frame = ttk.LabelFrame(main_frame, text="Verfügbare Aktionen", padding="20")
-        buttons_frame.grid(row=2, column=0, columnspan=2, pady=20, sticky=(tk.W, tk.E))
+        # Create buttons frame with improved styling
+        buttons_frame = ttk.LabelFrame(main_frame, text="Verfügbare Aktionen", padding="25")
+        buttons_frame.grid(row=2, column=0, pady=20, sticky=(tk.W, tk.E))
         
-        # Configure grid columns to be equal width
-        buttons_frame.columnconfigure(0, weight=1)
-        buttons_frame.columnconfigure(1, weight=1)
+        # Configure grid for 2 columns of equal width
+        buttons_frame.grid_columnconfigure(0, weight=1)
+        buttons_frame.grid_columnconfigure(1, weight=1)
         
-        # Add buttons with improved styling
+        # Add buttons with improved styling and spacing
         button_configs = [
             ("Drucker hinzufügen", self.add_printer),
             ("PDF-Drucker hinzufügen", self.add_pdf_printer),
@@ -110,10 +139,13 @@ class BuzeGUI:
         for idx, (text, command) in enumerate(button_configs):
             row = idx // 2
             col = idx % 2
-            btn = ttk.Button(buttons_frame, text=text, command=command)
-            btn.grid(row=row, column=col, pady=5, padx=5, sticky=(tk.W, tk.E))
+            btn = ttk.Button(buttons_frame, text=text, command=command, width=30)
+            btn.grid(row=row, column=col, pady=8, padx=10, sticky=(tk.W, tk.E))
 
     def on_zentrum_select(self, event):
+        # Extract abbreviation from selection (first 3 characters)
+        selected = event.widget.get()[:3]  # Gets 'SFD' from 'SFD - Saalfelden'
+        
         zentrum_map = {
             'SFD': ('3110', 'n3110', r'\\atlas\ftgroups\3110\Scan Dateien'),
             'MLK': ('3130', 'n3130', 'nicht_vorhanden'),
@@ -125,7 +157,6 @@ class BuzeGUI:
             'TDF': ('3000', 'n3100', r'\\n3000\tt\Scan-Dateien')
         }
         
-        selected = event.widget.get()
         if selected in zentrum_map:
             self.zentrum.set(zentrum_map[selected][0])
             self.kkm.set(zentrum_map[selected][1])
@@ -146,11 +177,12 @@ class BuzeGUI:
         if not self.check_zentrum_selected():
             return
             
-        selected_center = self.zentrum_combo.get()
+        selected_center = self.zentrum_combo.get()[:3]  # Get just the abbreviation (e.g., 'SFD' from 'SFD - Saalfelden')
+        selected_center_full = self.zentrum_combo.get()  # Keep full name for display
         
         # Create a new top-level window
         printer_window = tk.Toplevel(self.root)
-        printer_window.title(f"Drucker für {selected_center}")
+        printer_window.title(f"Drucker für {selected_center_full}")
         printer_window.geometry("400x300")
         
         # Create a frame for the printer list
@@ -158,7 +190,7 @@ class BuzeGUI:
         frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
         
         # Add a label
-        ttk.Label(frame, text=f"Verfügbare Drucker in {selected_center}:", 
+        ttk.Label(frame, text=f"Verfügbare Drucker in {selected_center_full}:", 
                  font=('Helvetica', 10, 'bold')).grid(row=0, column=0, pady=(0, 10))
         
         # Create a listbox with available printers
@@ -170,7 +202,7 @@ class BuzeGUI:
         scrollbar.grid(row=1, column=1, sticky=(tk.N, tk.S))
         printer_listbox.configure(yscrollcommand=scrollbar.set)
         
-        # Insert printers for selected center
+        # Insert printers for selected center using the abbreviation
         for printer in self.center_printers[selected_center]:
             printer_listbox.insert(tk.END, printer)
         
@@ -179,7 +211,6 @@ class BuzeGUI:
             if not selections:
                 messagebox.showwarning("Warnung", "Bitte wählen Sie mindestens einen Drucker aus.")
                 return
-            
             server = f"n{self.zentrum.get()}"
             success_count = 0
             
@@ -194,9 +225,10 @@ class BuzeGUI:
                                   f"{success_count} Drucker wurde(n) erfolgreich hinzugefügt.")
             printer_window.destroy()
         
-        # Add install button
+        # Add install button with improved styling
         ttk.Button(frame, text="Ausgewählte Drucker installieren", 
-                   command=install_selected_printers).grid(row=2, column=0, pady=10)
+                  command=install_selected_printers,
+                  width=30).grid(row=2, column=0, pady=15)
 
     def add_pdf_printer(self):
         printers = ["pdf-mail", "pdf-mail-ft"]
@@ -348,14 +380,17 @@ drivestoredirect:s:"""
         ttk.Label(frame, text="Zentrum auswählen:", 
                  font=('Helvetica', 10, 'bold')).grid(row=0, column=0, pady=(0, 10))
         
+        # Create list of full names for dropdown
+        center_display_values = [f"{abbr} - {name}" for abbr, name in self.center_names.items()]
+        
         # Create the dropdown
         additional_zentrum = ttk.Combobox(frame, 
-                                        values=['SFD', 'MLK', 'OOE', 'TRL', 'LEB', 'KAL', 'KTN', 'TDF'],
+                                        values=center_display_values,
                                         state='readonly')
         additional_zentrum.grid(row=1, column=0, pady=(0, 20))
         
         def process_selection():
-            selected_zentrum = additional_zentrum.get()
+            selected_zentrum = additional_zentrum.get()[:3]  # Gets abbreviation from selection
             if not selected_zentrum:
                 messagebox.showwarning("Warnung", "Bitte wählen Sie ein Zentrum aus.")
                 return

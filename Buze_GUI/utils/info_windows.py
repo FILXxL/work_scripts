@@ -3,7 +3,7 @@ import customtkinter as ctk # type: ignore
 def create_help_window(parent):
     help_window = ctk.CTkToplevel(parent)
     help_window.title("Hilfe")
-    help_window.geometry("600x400")
+    help_window.geometry("600x520")
     help_window.grab_set()  # Make window modal
     
     # Main frame with padding
@@ -22,25 +22,45 @@ def create_help_window(parent):
     scroll_frame.pack(fill="both", expand=True)
     
     help_text = """
-    1. Zentrum auswählen:
-       - Wählen Sie zuerst Ihr Zentrum aus der Dropdown-Liste
-    
-    2. Drucker einrichten:
-       - Klicken Sie auf 'Drucker hinzufügen'
-       - Wählen Sie die gewünschten Drucker aus
-    
-    3. PDF-Drucker:
-       - Der PDF-Drucker wird automatisch eingerichtet
-    
-    4. Netzlaufwerke:
-       - M: und N: werden automatisch verbunden
-       - Vertriebsordner kann separat eingebunden werden
-    
-    5. KKM-Verknüpfung:
-       - Erstellt eine Verknüpfung zum KKM-System
-       - Nur für lizenzierte PCs verfügbar
-    
-    Bei Problemen wenden Sie sich an den IT-Support.
+    1. Zentrum auswählen
+   - Wählen Sie Ihr Zentrum aus der Dropdown-Liste
+   - Dies ist notwendig für die meisten weiteren Aktionen
+
+2. Drucker einrichten
+   - Klicken Sie auf "Drucker hinzufügen"
+   - Wählen Sie die gewünschten Drucker aus der Liste
+   - Mehrfachauswahl ist möglich
+   - Die PDF-Drucker können separat hinzugefügt werden
+
+3. Netzwerklaufwerke
+   - "M:,N: Laufwerke verbinden" verbindet die Standardlaufwerke
+   - M: ist Ihr persönlicher Ordner
+   - N: ist der Zentrumsordner
+   - Zusätzliche Laufwerke können über separate Optionen eingerichtet werden
+
+4. Desktop-Links
+   - Erstellt wichtige Verknüpfungen auf dem Desktop
+   - Outlook (falls installiert)
+   - MeinCockpit
+   - CTOnline
+   - BRZ Portal Austria
+
+5. KKM Verknüpfung
+   - Erstellt eine Remote Desktop Verbindung zum KKM
+   - Die Verbindung wird auf dem Desktop gespeichert
+
+6. Zusätzliche Funktionen
+   - Vertriebsordner kann als separates Laufwerk eingebunden werden
+   - Scanordner kann als separates Laufwerk eingebunden werden
+   - Zusätzliche Zentrumsordner können eingebunden werden
+
+Bei Problemen wenden Sie sich an:
+IT-Support: +43 123 456789
+E-Mail: support@example.com
+
+Geschäftszeiten Support:
+Montag - Donnerstag: 08:00 - 16:00
+Freitag: 08:00 - 12:00
     """
     
     ctk.CTkLabel(
@@ -63,7 +83,7 @@ def create_help_window(parent):
 def create_about_window(parent):
     about_window = ctk.CTkToplevel(parent)
     about_window.title("Über")
-    about_window.geometry("400x300")
+    about_window.geometry("600x520")
     about_window.grab_set()  # Make window modal
     
     # Main frame with padding
@@ -86,11 +106,23 @@ def create_about_window(parent):
     
     # Description
     description = """
-    Dieses Tool wurde entwickelt, um die Einrichtung
-    neuer Arbeitsplätze zu vereinfachen und zu
-    standardisieren.
+    Ein Tool zur automatischen Einrichtung von\n"
+             "Arbeitsplätzen in der ÖAMTC Fahrtechnik.
+             Dieses Programm automatisiert die Einrichtung von:
+             • Netzwerkdruckern\n"
+             "• Netzwerklaufwerken\n"
+             "• Desktop-Verknüpfungen\n"
+             "• Remote Desktop Verbindungen"
+             Entwickelt von:\n"
+             "IT-Abteilung\n"
+             "ÖAMTC Fahrtechnik",
+             
     
-    © 2024 ÖAMTC Fahrtechnik
+    
+             Alle Rechte vorbehalten.\n\n
+             "Build: 2024.01",
+    
+    © 2025 ÖAMTC Fahrtechnik
     """
     
     ctk.CTkLabel(

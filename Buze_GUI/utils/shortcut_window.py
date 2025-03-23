@@ -3,6 +3,7 @@ from tkinter import messagebox
 import os
 from pathlib import Path
 from utils.commands import run_command
+from config.shortcuts import SHORTCUTS
 
 def create_shortcut_window(parent):
     shortcut_window = ctk.CTkToplevel(parent)
@@ -25,22 +26,25 @@ def create_shortcut_window(parent):
     scroll_frame = ctk.CTkScrollableFrame(main_frame)
     scroll_frame.pack(fill="both", expand=True)
     
-    # Define available shortcuts
-    shortcuts = {
-        "Outlook": r"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE",
-        "Excel": r"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE",
-        "Word": r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE",
-        "Chrome": r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-        "Firefox": r"C:\Program Files\Mozilla Firefox\firefox.exe"
-    }
-    
-    # Checkboxes for shortcuts
+    # Replace the shortcuts creation section with this:
     shortcut_vars = {}
-    for name, path in shortcuts.items():
-        if os.path.exists(path):
-            var = ctk.BooleanVar()
-            shortcut_vars[name] = (var, path)
-            
+    for name, shortcut_info in SHORTCUTS.items():
+        var = ctk.BooleanVar()
+        
+        # For Outlook shortcut, check if file exists
+        if shortcut_info.get('type') == 'outlook_shortcut':
+            if os.path.exists(shortcut_info['path']):
+                shortcut_vars[name] = (var, shortcut_info['path'])
+                checkbox = ctk.CTkCheckBox(
+                    scroll_frame,
+                    text=name,
+                    variable=var,
+                    font=ctk.CTkFont(size=12)
+                )
+                checkbox.pack(pady=5, padx=10, anchor="w")
+        else:
+            # For URL shortcuts, add them directly
+            shortcut_vars[name] = (var, shortcut_info['url'])
             checkbox = ctk.CTkCheckBox(
                 scroll_frame,
                 text=name,
@@ -74,9 +78,15 @@ def create_shortcut_window(parent):
             return
         
         desktop = str(Path.home() / "Desktop")
-        for name, path in selected:
-            command = f'powershell "$ws = New-Object -ComObject WScript.Shell; $s = $ws.CreateShortcut(\'{desktop}\\{name}.lnk\'); $s.TargetPath = \'{path}\'; $s.Save()"'
-            run_command(command)
+        for name, target in selected:
+            if target.startswith('http'):
+                # Create URL shortcut
+                with open(f"{desktop}\\{name}.url", 'w') as f:
+                    f.write(f"[InternetShortcut]\nURL={target}")
+            else:
+                # Create application shortcut
+                command = f'powershell "$ws = New-Object -ComObject WScript.Shell; $s = $ws.CreateShortcut(\'{desktop}\\{name}.lnk\'); $s.TargetPath = \'{target}\'; $s.Save()"'
+                run_command(command)
         
         messagebox.showinfo("Erfolg", "Die ausgewählten Verknüpfungen wurden erstellt.")
         shortcut_window.destroy()

@@ -20,9 +20,9 @@ class BuzeGUI:
         self.root.title("ÖAMTC Fahrtechnik Onboarding")
         self.root.geometry("900x700")
         
-        # Set theme and color
-        ctk.set_appearance_mode("light")  # Options: "light", "dark", "system"
-        ctk.set_default_color_theme("blue")  # Options: "blue", "dark-blue", "green"
+        # Set initial theme and color
+        ctk.set_appearance_mode("light")  # Changed from "system" to "dark" as default
+        ctk.set_default_color_theme("green")
         
         # Initialize variables
         self.zentrum = ctk.StringVar()
@@ -38,8 +38,8 @@ class BuzeGUI:
     
     def setup_gui(self):
         # Create main frame
-        main_frame = ctk.CTkFrame(self.root)
-        main_frame.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
+        main_frame = ctk.CTkFrame(self.root, fg_color=("gray95", "gray10"))  # Light mode color, Dark mode color
+        main_frame.grid(row=0, column=0, padx=0, pady=0, sticky="nsew")  # Remove padding
         main_frame.grid_columnconfigure(0, weight=1)
         
         # Setup header
@@ -53,10 +53,13 @@ class BuzeGUI:
         
         # Add help and about buttons
         self.setup_info_buttons(main_frame)
+        
+        # Add appearance mode switch
+        self.setup_appearance_switch(main_frame)
     
     def setup_header(self, main_frame):
         header_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        header_frame.grid(row=0, column=0, pady=(0, 30))
+        header_frame.grid(row=0, column=0, pady=(30, 30))  # Added top padding of 30
         
         ctk.CTkLabel(
             header_frame,
@@ -305,6 +308,25 @@ drivestoredirect:s:"""
             messagebox.showwarning("Warnung", "Bitte wählen Sie zuerst ein Zentrum aus.")
             return False
         return True
+
+    def setup_appearance_switch(self, main_frame):
+        switch_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+        switch_frame.grid(row=4, column=0, pady=(20, 0), sticky="w")
+        
+        self.appearance_mode_switch = ctk.CTkSwitch(
+            switch_frame,
+            text="Dark Mode",
+            command=self.change_appearance_mode,
+            onvalue="dark",
+            offvalue="light"
+        )
+        self.appearance_mode_switch.grid(row=0, column=0, padx=5)
+        # Set initial switch state
+        self.appearance_mode_switch.select() if ctk.get_appearance_mode() == "dark" else self.appearance_mode_switch.deselect()
+
+    def change_appearance_mode(self):
+        new_mode = self.appearance_mode_switch.get()
+        ctk.set_appearance_mode(new_mode)
 
 def main():
     root = ctk.CTk()

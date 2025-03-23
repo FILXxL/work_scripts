@@ -22,7 +22,20 @@ class BuzeGUI:
         
         # Set theme and color
         ctk.set_appearance_mode("light")  # Options: "light", "dark", "system"
-        ctk.set_default_color_theme("blue")  # Options: "blue", "dark-blue", "green"
+        # Remove the default blue theme
+        # Create custom color theme
+        custom_color = "#F9EA3E"
+        ctk.set_default_color_theme("blue")  # We'll override the colors below
+        
+        # Override default colors for all widgets
+        self.root._apply_appearance_mode = custom_color
+        ctk.ThemeManager.theme["CTkButton"]["fg_color"] = [custom_color, custom_color]
+        ctk.ThemeManager.theme["CTkButton"]["hover_color"] = [self.adjust_color_brightness(custom_color, -20), 
+                                                            self.adjust_color_brightness(custom_color, -20)]
+        ctk.ThemeManager.theme["CTkOptionMenu"]["fg_color"] = [custom_color, custom_color]
+        ctk.ThemeManager.theme["CTkOptionMenu"]["button_color"] = [custom_color, custom_color]
+        ctk.ThemeManager.theme["CTkOptionMenu"]["button_hover_color"] = [self.adjust_color_brightness(custom_color, -20),
+                                                                        self.adjust_color_brightness(custom_color, -20)]
         
         # Initialize variables
         self.zentrum = ctk.StringVar()
@@ -305,6 +318,18 @@ drivestoredirect:s:"""
             messagebox.showwarning("Warnung", "Bitte wählen Sie zuerst ein Zentrum aus.")
             return False
         return True
+
+    # Add this new helper method to adjust color brightness
+    def adjust_color_brightness(self, hex_color, brightness_offset):
+        # Convert hex to RGB
+        hex_color = hex_color.lstrip('#')
+        rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+        
+        # Adjust brightness
+        new_rgb = tuple(max(0, min(255, value + brightness_offset)) for value in rgb)
+        
+        # Convert back to hex
+        return '#{:02x}{:02x}{:02x}'.format(*new_rgb)
 
 def main():
     root = ctk.CTk()

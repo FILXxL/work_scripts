@@ -34,7 +34,7 @@ class BuzeGUI:
         self.root.iconbitmap(icon_path)
         
         # Set initial theme and color
-        ctk.set_appearance_mode("light")
+        ctk.set_appearance_mode("system")
         ctk.set_default_color_theme(resource_path("theme/yellow.json"))
         
         # Initialize variables

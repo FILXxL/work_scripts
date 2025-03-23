@@ -3,7 +3,7 @@ from tkinter import messagebox, simpledialog
 import os
 from pathlib import Path
 import sys
-import psutil  # Add this import
+import psutil  # Add this import # type: ignore
 
 from config.centers import CENTER_NAMES, ZENTRUM_MAP
 from config.printers import CENTER_PRINTERS

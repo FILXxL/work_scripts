@@ -3,6 +3,7 @@ from tkinter import messagebox, simpledialog
 import os
 from pathlib import Path
 import sys
+import psutil  # Add this import
 
 from config.centers import CENTER_NAMES, ZENTRUM_MAP
 from config.printers import CENTER_PRINTERS
@@ -329,12 +330,36 @@ drivestoredirect:s:"""
             offvalue="light"
         )
         self.appearance_mode_switch.grid(row=0, column=0, padx=5)
+        
+        # Add uptime label
+        self.uptime_label = ctk.CTkLabel(
+            switch_frame,
+            text=self.get_formatted_uptime(),
+            font=ctk.CTkFont(size=12)
+        )
+        self.uptime_label.grid(row=1, column=0, padx=5, pady=(5, 0), sticky="w")
+        
+        # Update uptime every minute
+        self.update_uptime()
+        
         # Set initial switch state
         self.appearance_mode_switch.select() if ctk.get_appearance_mode() == "dark" else self.appearance_mode_switch.deselect()
+
+    def update_uptime(self):
+        self.uptime_label.configure(text=self.get_formatted_uptime())
+        self.root.after(60000, self.update_uptime)  # Update every minute (60000 ms)
 
     def change_appearance_mode(self):
         new_mode = self.appearance_mode_switch.get()
         ctk.set_appearance_mode(new_mode)
+
+    def get_formatted_uptime(self):
+        uptime = psutil.boot_time()
+        uptime_seconds = psutil.time.time() - uptime
+        days = int(uptime_seconds // (24 * 3600))
+        hours = int((uptime_seconds % (24 * 3600)) // 3600)
+        minutes = int((uptime_seconds % 3600) // 60)
+        return f"PC Uptime: {days}d {hours}h {minutes}m"
 
 def main():
     root = ctk.CTk()

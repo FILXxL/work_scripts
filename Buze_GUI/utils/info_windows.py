@@ -23,18 +23,18 @@ def create_help_window(parent):
     
     help_text = """
     1. Zentrum auswählen
-   - Wählen Sie Ihr Zentrum aus der Dropdown-Liste
+   - Wähle dein Zentrum aus der Dropdown-Liste
    - Dies ist notwendig für die meisten weiteren Aktionen
 
 2. Drucker einrichten
-   - Klicken Sie auf "Drucker hinzufügen"
-   - Wählen Sie die gewünschten Drucker aus der Liste
+   - Klicke auf "Drucker hinzufügen"
+   - Wähle die gewünschten Drucker aus der Liste
    - Mehrfachauswahl ist möglich
    - Die PDF-Drucker können separat hinzugefügt werden
 
 3. Netzwerklaufwerke
    - "M:,N: Laufwerke verbinden" verbindet die Standardlaufwerke
-   - M: ist Ihr persönlicher Ordner
+   - M: ist dein persönlicher Ordner
    - N: ist der Zentrumsordner
    - Zusätzliche Laufwerke können über separate Optionen eingerichtet werden
 
@@ -54,13 +54,9 @@ def create_help_window(parent):
    - Scanordner kann als separates Laufwerk eingebunden werden
    - Zusätzliche Zentrumsordner können eingebunden werden
 
-Bei Problemen wenden Sie sich an:
-IT-Support: +43 123 456789
-E-Mail: support@example.com
-
-Geschäftszeiten Support:
-Montag - Donnerstag: 08:00 - 16:00
-Freitag: 08:00 - 12:00
+Bei Problemen wende dich bitte an:
+Hugo Janicek: +43 664 613 2488
+E-Mail: philipp.janicek@oeamtc.at
     """
     
     ctk.CTkLabel(
@@ -106,34 +102,33 @@ def create_about_window(parent):
     
     # Description
     description = """
+    Ein Tool zur automatischen Einrichtung von
+    Arbeitsplätzen in der ÖAMTC Fahrtechnik.
 
-            Ein Tool zur automatischen Einrichtung von
-             Arbeitsplätzen in der ÖAMTC Fahrtechnik.
-             Dieses Programm automatisiert die Einrichtung von:
-             • Netzwerkdruckern
-             • Netzwerklaufwerken
-             • Desktop-Verknüpfungen
-             • Remote Desktop Verbindungen
+    Dieses Programm automatisiert die Einrichtung von:
+    • Netzwerkdruckern
+    • Netzwerklaufwerken
+    • Desktop-Verknüpfungen
+    • Remote Desktop Verbindungen
 
 
-             Entwickelt von:
-             Hugo
-             EDV&Systeme
-             ÖAMTC Fahrtechnik
-    
-             Alle Rechte vorbehalten.
-             
-    
-            © 2025 ÖAMTC Fahrtechnik
+    Entwickelt von:
+    Hugo Janicek
+    EDV&Systeme
+    ÖAMTC Fahrtechnik
+
+
+    Alle Rechte vorbehalten.
+    © 2025 ÖAMTC Fahrtechnik
     """
     
     ctk.CTkLabel(
         main_frame,
         text=description,
-        font=ctk.CTkFont(size=12),
+        font=ctk.CTkFont(size=14),
         justify="center",
-        wraplength=300
-    ).pack(pady=20)
+        wraplength=400
+    ).pack(pady=20, expand=True)
     
     # Close button
     ctk.CTkButton(

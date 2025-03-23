@@ -1,6 +1,6 @@
-import PyInstaller.__main__
+from PyInstaller.__main__ import run
 
-PyInstaller.__main__.run([
+run([
     'main.py',
     '--onefile',
     '--windowed',

@@ -5,11 +5,13 @@ from pathlib import Path
 
 from config.centers import CENTER_NAMES, ZENTRUM_MAP
 from config.printers import CENTER_PRINTERS
+from config.kkm_license import KKM_LICENSED_PCS
 from utils.commands import run_command
 from utils.gui_helpers import create_styled_window, create_frame, configure_styles
 from utils.printer_window import create_printer_window
 from utils.share_window import create_share_window
 from utils.info_windows import create_help_window, create_about_window
+from utils.shortcut_window import create_shortcut_window
 
 class BuzeGUI:
     def __init__(self, root):
@@ -157,24 +159,7 @@ class BuzeGUI:
                                   f"Scanordner wurde als {drive_letter} eingerichtet.")
     
     def create_desktop_links(self):
-        desktop_path = str(Path.home() / "Desktop")
-        
-        outlook_source = str(Path.home() / "AppData/Roaming/Microsoft/Windows/Start Menu/Programs/outlook.lnk")
-        if os.path.exists(outlook_source):
-            os.system(f'copy "{outlook_source}" "{desktop_path}"')
-        
-        shortcuts = {
-            "MeinCockpit.url": "https://lhrportal.oeamtc.at/Self/login",
-            "CTOnline.url": "https://www.ctonline.at/auth",
-            "BRZ_PortalAustria.url": "https://secure.portal.at/pat/#FSR"
-        }
-        
-        for filename, url in shortcuts.items():
-            shortcut_path = os.path.join(desktop_path, filename)
-            with open(shortcut_path, 'w') as f:
-                f.write(f"[InternetShortcut]\nURL={url}")
-        
-        messagebox.showinfo("Erfolg", "Desktop-Links wurden erstellt.")
+        create_shortcut_window(self.root)
     
     def setup_shares(self):
         if not self.check_zentrum_selected():
@@ -195,6 +180,15 @@ class BuzeGUI:
     def create_kkm_link(self):
         if not self.check_zentrum_selected():
             return
+        
+        current_pc = os.getenv('COMPUTERNAME')
+        if current_pc not in KKM_LICENSED_PCS:
+            response = messagebox.askyesno(
+                "Warning",
+                "This PC is not in the list of KKM licensed computers.\nDo you want to continue anyway?"
+            )
+            if not response:
+                return
         
         rdp_path = os.path.join(str(Path.home()), "Desktop", "KKM.rdp")
         

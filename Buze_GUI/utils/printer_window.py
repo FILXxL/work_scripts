@@ -62,7 +62,7 @@ def create_printer_window(parent, center, center_full, printers, zentrum):
             return
         
         for printer in selected:
-            command = f'RUNDLL32 printui.dll,PrintUIEntry /in /n "\\\\{zentrum.get()}\\{printer}"'
+            command = f'RUNDLL32 printui.dll,PrintUIEntry /in /n "\\\\N{zentrum.get()}\\{printer}"'
             run_command(command)
         
         messagebox.showinfo("Erfolg", "Die ausgewählten Drucker wurden installiert.")

@@ -102,27 +102,29 @@ def create_about_window(parent):
         main_frame,
         text="Version 1.0",
         font=ctk.CTkFont(size=14)
-    ).pack(pady=(0, 20))
+    ).pack(pady=(0, 10))
     
     # Description
     description = """
-    Ein Tool zur automatischen Einrichtung von\n"
-             "Arbeitsplätzen in der ÖAMTC Fahrtechnik.
+
+            Ein Tool zur automatischen Einrichtung von
+             Arbeitsplätzen in der ÖAMTC Fahrtechnik.
              Dieses Programm automatisiert die Einrichtung von:
-             • Netzwerkdruckern\n"
-             "• Netzwerklaufwerken\n"
-             "• Desktop-Verknüpfungen\n"
-             "• Remote Desktop Verbindungen"
-             Entwickelt von:\n"
-             "IT-Abteilung\n"
-             "ÖAMTC Fahrtechnik",
+             • Netzwerkdruckern
+             • Netzwerklaufwerken
+             • Desktop-Verknüpfungen
+             • Remote Desktop Verbindungen
+
+
+             Entwickelt von:
+             Hugo
+             EDV&Systeme
+             ÖAMTC Fahrtechnik
+    
+             Alle Rechte vorbehalten.
              
     
-    
-             Alle Rechte vorbehalten.\n\n
-             "Build: 2024.01",
-    
-    © 2025 ÖAMTC Fahrtechnik
+            © 2025 ÖAMTC Fahrtechnik
     """
     
     ctk.CTkLabel(

@@ -4,7 +4,7 @@ from pathlib import Path
 OUTLOOK_PATH = str(Path.home() / "AppData/Roaming/Microsoft/Windows/Start Menu/Programs/outlook.lnk")
 
 SHORTCUTS = {
-    "MeinCockpit": {
+    "MeinCockpit (LHR)": {
         "name": "MeinCockpit.url",
         "url": "https://lhrportal.oeamtc.at/Self/login"
     },

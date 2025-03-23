@@ -18,7 +18,7 @@ class BuzeGUI:
     def __init__(self, root):
         self.root = root
         self.root.title("ÖAMTC Fahrtechnik Onboarding")
-        self.root.geometry("900x700")
+        self.root.geometry("900x620")
         
         # Set initial theme and color
         ctk.set_appearance_mode("light")
@@ -102,7 +102,7 @@ class BuzeGUI:
             buttons_frame,
             text="Verfügbare Aktionen",
             font=ctk.CTkFont(size=16, weight="bold")
-        ).grid(row=0, column=0, columnspan=2, pady=(10, 20))
+        ).grid(row=0, column=0, columnspan=2, pady=(20, 30))  # Increased padding around title
         
         buttons_frame.grid_columnconfigure(0, weight=1)
         buttons_frame.grid_columnconfigure(1, weight=1)
@@ -128,11 +128,11 @@ class BuzeGUI:
                 width=300,
                 height=35
             )
-            btn.grid(row=row, column=col, pady=8, padx=10, sticky="ew")
+            btn.grid(row=row, column=col, pady=12, padx=20, sticky="ew")  # Increased button padding
     
     def setup_info_buttons(self, main_frame):
         info_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
-        info_frame.grid(row=3, column=0, pady=(20, 0), sticky="e")
+        info_frame.grid(row=4, column=0, pady=(20, 0), sticky="e")
         
         ctk.CTkButton(
             info_frame,

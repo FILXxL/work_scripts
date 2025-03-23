@@ -4,6 +4,5 @@ KKM_LICENSED_PCS = [
     "PC-EXAMPLE-02",
     "PC-EXAMPLE-03",
     "LAPTOP-TEST-01",
-    "WHITEBOY",
     # Add more PC names here
 ]

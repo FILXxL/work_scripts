@@ -1,76 +1,90 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
+import customtkinter as ctk
+from tkinter import messagebox
 import os
 from pathlib import Path
-from config.shortcuts import SHORTCUTS
+from utils.commands import run_command
 
 def create_shortcut_window(parent):
-    shortcut_window = tk.Toplevel(parent)
-    shortcut_window.title("Desktop-Verknüpfungen")
-    shortcut_window.geometry("400x300")
+    shortcut_window = ctk.CTkToplevel(parent)
+    shortcut_window.title("Desktop-Verknüpfungen erstellen")
+    shortcut_window.geometry("500x400")
+    shortcut_window.grab_set()  # Make window modal
     
-    # Make window modal
-    shortcut_window.transient(parent)
-    shortcut_window.grab_set()
+    # Main frame with padding
+    main_frame = ctk.CTkFrame(shortcut_window)
+    main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
-    frame = ttk.Frame(shortcut_window, padding="20")
-    frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+    # Title
+    ctk.CTkLabel(
+        main_frame,
+        text="Verfügbare Verknüpfungen",
+        font=ctk.CTkFont(size=16, weight="bold")
+    ).pack(pady=(0, 20))
     
-    ttk.Label(frame, text="Verfügbare Verknüpfungen:", 
-             font=('Helvetica', 10, 'bold')).grid(row=0, column=0, pady=(0, 10))
+    # Create scrollable frame for shortcuts
+    scroll_frame = ctk.CTkScrollableFrame(main_frame)
+    scroll_frame.pack(fill="both", expand=True)
     
-    # Create a listbox with available shortcuts
-    shortcut_listbox = tk.Listbox(frame, selectmode=tk.MULTIPLE, width=40, height=10)
-    shortcut_listbox.grid(row=1, column=0, pady=(0, 10))
+    # Define available shortcuts
+    shortcuts = {
+        "Outlook": r"C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE",
+        "Excel": r"C:\Program Files\Microsoft Office\root\Office16\EXCEL.EXE",
+        "Word": r"C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE",
+        "Chrome": r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+        "Firefox": r"C:\Program Files\Mozilla Firefox\firefox.exe"
+    }
     
-    # Add scrollbar
-    scrollbar = ttk.Scrollbar(frame, orient="vertical", command=shortcut_listbox.yview)
-    scrollbar.grid(row=1, column=1, sticky=(tk.N, tk.S))
-    shortcut_listbox.configure(yscrollcommand=scrollbar.set)
+    # Checkboxes for shortcuts
+    shortcut_vars = {}
+    for name, path in shortcuts.items():
+        if os.path.exists(path):
+            var = ctk.BooleanVar()
+            shortcut_vars[name] = (var, path)
+            
+            checkbox = ctk.CTkCheckBox(
+                scroll_frame,
+                text=name,
+                variable=var,
+                font=ctk.CTkFont(size=12)
+            )
+            checkbox.pack(pady=5, padx=10, anchor="w")
     
-    # Insert shortcuts
-    for shortcut_name in SHORTCUTS:
-        shortcut_listbox.insert(tk.END, shortcut_name)
+    # Buttons frame
+    button_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+    button_frame.pack(fill="x", pady=(20, 0))
     
-    def create_selected_shortcuts():
-        selections = shortcut_listbox.curselection()
-        if not selections:
+    # Select All button
+    def select_all():
+        for var, _ in shortcut_vars.values():
+            var.set(True)
+    
+    ctk.CTkButton(
+        button_frame,
+        text="Alle auswählen",
+        command=select_all,
+        width=120,
+        height=32
+    ).pack(side="left", padx=5)
+    
+    # Create shortcuts button
+    def create_shortcuts():
+        selected = [(name, path) for name, (var, path) in shortcut_vars.items() if var.get()]
+        if not selected:
             messagebox.showwarning("Warnung", "Bitte wählen Sie mindestens eine Verknüpfung aus.")
             return
         
-        desktop_path = str(Path.home() / "Desktop")
-        success_count = 0
+        desktop = str(Path.home() / "Desktop")
+        for name, path in selected:
+            command = f'powershell "$ws = New-Object -ComObject WScript.Shell; $s = $ws.CreateShortcut(\'{desktop}\\{name}.lnk\'); $s.TargetPath = \'{path}\'; $s.Save()"'
+            run_command(command)
         
-        for index in selections:
-            shortcut_name = shortcut_listbox.get(index)
-            shortcut_info = SHORTCUTS[shortcut_name]
-            
-            if shortcut_info.get("type") == "outlook_shortcut":
-                # Use the path from the configuration
-                outlook_source = shortcut_info["path"]
-                if os.path.exists(outlook_source):
-                    os.system(f'copy "{outlook_source}" "{desktop_path}"')
-                    success_count += 1
-                else:
-                    messagebox.showwarning("Warnung", 
-                                         "Outlook-Verknüpfung konnte nicht gefunden werden.")
-            else:
-                # Handle URL shortcuts
-                shortcut_path = os.path.join(desktop_path, shortcut_info["name"])
-                try:
-                    with open(shortcut_path, 'w') as f:
-                        f.write(f"[InternetShortcut]\nURL={shortcut_info['url']}")
-                    success_count += 1
-                except Exception as e:
-                    messagebox.showerror("Fehler", 
-                                       f"Fehler beim Erstellen von {shortcut_name}: {str(e)}")
-        
-        if success_count > 0:
-            messagebox.showinfo("Erfolg", 
-                              f"{success_count} Verknüpfung(en) wurde(n) erfolgreich erstellt.")
+        messagebox.showinfo("Erfolg", "Die ausgewählten Verknüpfungen wurden erstellt.")
         shortcut_window.destroy()
     
-    # Add create button
-    ttk.Button(frame, text="Ausgewählte Verknüpfungen erstellen", 
-              command=create_selected_shortcuts,
-              width=30).grid(row=2, column=0, pady=15) 
+    ctk.CTkButton(
+        button_frame,
+        text="Erstellen",
+        command=create_shortcuts,
+        width=120,
+        height=32
+    ).pack(side="right", padx=5) 

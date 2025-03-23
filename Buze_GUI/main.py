@@ -1,5 +1,5 @@
-import tkinter as tk
-from tkinter import ttk, messagebox, simpledialog
+import customtkinter as ctk
+from tkinter import messagebox, simpledialog
 import os
 from pathlib import Path
 
@@ -12,6 +12,7 @@ from utils.printer_window import create_printer_window
 from utils.share_window import create_share_window
 from utils.info_windows import create_help_window, create_about_window
 from utils.shortcut_window import create_shortcut_window
+from utils.custom_dialogs import CustomInputDialog
 
 class BuzeGUI:
     def __init__(self, root):
@@ -19,10 +20,14 @@ class BuzeGUI:
         self.root.title("ÖAMTC Fahrtechnik Onboarding")
         self.root.geometry("900x700")
         
+        # Set theme and color
+        ctk.set_appearance_mode("light")  # Options: "light", "dark", "system"
+        ctk.set_default_color_theme("blue")  # Options: "blue", "dark-blue", "green"
+        
         # Initialize variables
-        self.zentrum = tk.StringVar()
-        self.kkm = tk.StringVar()
-        self.scanfolder = tk.StringVar()
+        self.zentrum = ctk.StringVar()
+        self.kkm = ctk.StringVar()
+        self.scanfolder = ctk.StringVar()
         
         # Configure root grid
         self.root.grid_columnconfigure(0, weight=1)
@@ -32,13 +37,9 @@ class BuzeGUI:
         self.setup_gui()
     
     def setup_gui(self):
-        # Style configuration
-        style = ttk.Style()
-        configure_styles(style)
-        
         # Create main frame
-        main_frame = ttk.Frame(self.root, padding="30")
-        main_frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+        main_frame = ctk.CTkFrame(self.root)
+        main_frame.grid(row=0, column=0, padx=30, pady=30, sticky="nsew")
         main_frame.grid_columnconfigure(0, weight=1)
         
         # Setup header
@@ -54,32 +55,51 @@ class BuzeGUI:
         self.setup_info_buttons(main_frame)
     
     def setup_header(self, main_frame):
-        header_frame = ttk.Frame(main_frame)
+        header_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
         header_frame.grid(row=0, column=0, pady=(0, 30))
-        ttk.Label(header_frame, text=f"Willkommen {os.getenv('USERNAME')}!",
-                 style='Header.TLabel').pack()
-        ttk.Label(header_frame, text=f"PC-Name: {os.getenv('COMPUTERNAME')}",
-                 style='Subheader.TLabel').pack()
+        
+        ctk.CTkLabel(
+            header_frame,
+            text=f"Willkommen {os.getenv('USERNAME')}!",
+            font=ctk.CTkFont(size=24, weight="bold")
+        ).pack(pady=(0, 5))
+        
+        ctk.CTkLabel(
+            header_frame,
+            text=f"PC-Name: {os.getenv('COMPUTERNAME')}",
+            font=ctk.CTkFont(size=14)
+        ).pack()
     
     def setup_center_selection(self, main_frame):
-        selection_frame = ttk.Frame(main_frame)
+        selection_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
         selection_frame.grid(row=1, column=0, pady=(0, 20))
-        selection_frame.grid_columnconfigure(0, weight=1)
         selection_frame.grid_columnconfigure(1, weight=1)
         
-        ttk.Label(selection_frame, text="Zentrum auswählen:",
-                 font=('Helvetica', 11, 'bold')).grid(row=0, column=0, padx=5)
+        ctk.CTkLabel(
+            selection_frame,
+            text="Zentrum auswählen:",
+            font=ctk.CTkFont(size=14, weight="bold")
+        ).grid(row=0, column=0, padx=5)
         
         center_display_values = [f"{abbr} - {name}" for abbr, name in CENTER_NAMES.items()]
-        self.zentrum_combo = ttk.Combobox(selection_frame,
-                                         values=center_display_values,
-                                         state='readonly', width=30)
+        self.zentrum_combo = ctk.CTkOptionMenu(
+            selection_frame,
+            values=center_display_values,
+            command=self.on_zentrum_select,
+            width=300
+        )
         self.zentrum_combo.grid(row=0, column=1, padx=5)
-        self.zentrum_combo.bind('<<ComboboxSelected>>', self.on_zentrum_select)
     
     def setup_action_buttons(self, main_frame):
-        buttons_frame = ttk.LabelFrame(main_frame, text="Verfügbare Aktionen", padding="25")
-        buttons_frame.grid(row=2, column=0, pady=20, sticky=(tk.W, tk.E))
+        buttons_frame = ctk.CTkFrame(main_frame)
+        buttons_frame.grid(row=2, column=0, pady=20, sticky="ew")
+        
+        # Add title for the frame
+        ctk.CTkLabel(
+            buttons_frame,
+            text="Verfügbare Aktionen",
+            font=ctk.CTkFont(size=16, weight="bold")
+        ).grid(row=0, column=0, columnspan=2, pady=(10, 20))
         
         buttons_frame.grid_columnconfigure(0, weight=1)
         buttons_frame.grid_columnconfigure(1, weight=1)
@@ -96,13 +116,39 @@ class BuzeGUI:
         ]
         
         for idx, (text, command) in enumerate(button_configs):
-            row = idx // 2
+            row = (idx // 2) + 1  # +1 because of title
             col = idx % 2
-            btn = ttk.Button(buttons_frame, text=text, command=command, width=30)
-            btn.grid(row=row, column=col, pady=8, padx=10, sticky=(tk.W, tk.E))
+            btn = ctk.CTkButton(
+                buttons_frame,
+                text=text,
+                command=command,
+                width=300,
+                height=35
+            )
+            btn.grid(row=row, column=col, pady=8, padx=10, sticky="ew")
     
-    def on_zentrum_select(self, event):
-        selected = event.widget.get()[:3]
+    def setup_info_buttons(self, main_frame):
+        info_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+        info_frame.grid(row=3, column=0, pady=(20, 0), sticky="e")
+        
+        ctk.CTkButton(
+            info_frame,
+            text="Hilfe",
+            command=lambda: create_help_window(self.root),
+            width=120,
+            height=32
+        ).grid(row=0, column=0, padx=5)
+        
+        ctk.CTkButton(
+            info_frame,
+            text="Über",
+            command=lambda: create_about_window(self.root),
+            width=120,
+            height=32
+        ).grid(row=0, column=1, padx=5)
+    
+    def on_zentrum_select(self, choice):
+        selected = choice[:3]
         if selected in ZENTRUM_MAP:
             self.zentrum.set(ZENTRUM_MAP[selected][0])
             self.kkm.set(ZENTRUM_MAP[selected][1])
@@ -128,12 +174,14 @@ class BuzeGUI:
         messagebox.showinfo("Erfolg", "PDF-Drucker wurden hinzugefügt.")
     
     def setup_vertrieb(self):
-        drive_letter = simpledialog.askstring("Laufwerk", 
-                                            "Laufwerksbuchstabe für Vertriebsordner (z.B. V:):")
+        dialog = CustomInputDialog(
+            self.root,
+            "Vertriebsordner verbinden",
+            "Laufwerksbuchstabe (z.B. V:)"
+        )
+        
+        drive_letter = dialog.result
         if drive_letter:
-            if not drive_letter.endswith(':'): 
-                drive_letter += ':'
-            
             run_command(f'net use {drive_letter} /delete', shell=True)
             if run_command(f'net use {drive_letter} "\\\\n3000\\tt\\VERTRIEB  NFZ chg"'):
                 messagebox.showinfo("Erfolg", 
@@ -147,12 +195,14 @@ class BuzeGUI:
             messagebox.showinfo("Info", "Für dieses Zentrum gibt es keinen Scanordner.")
             return
         
-        drive_letter = simpledialog.askstring("Laufwerk", 
-                                            "Laufwerksbuchstabe für Scanordner (z.B. S:):")
+        dialog = CustomInputDialog(
+            self.root,
+            "Scanordner verbinden",
+            "Laufwerksbuchstabe (z.B. S:)"
+        )
+        
+        drive_letter = dialog.result
         if drive_letter:
-            if not drive_letter.endswith(':'): 
-                drive_letter += ':'
-            
             run_command(f'net use {drive_letter} /delete')
             if run_command(f'net use {drive_letter} "{self.scanfolder.get()}"'):
                 messagebox.showinfo("Erfolg", 
@@ -255,21 +305,9 @@ drivestoredirect:s:"""
             messagebox.showwarning("Warnung", "Bitte wählen Sie zuerst ein Zentrum aus.")
             return False
         return True
-    
-    def setup_info_buttons(self, main_frame):
-        info_frame = ttk.Frame(main_frame)
-        info_frame.grid(row=3, column=0, pady=(10, 0), sticky=tk.E)
-        
-        ttk.Button(info_frame, text="Hilfe",
-                  command=lambda: create_help_window(self.root),
-                  width=15).grid(row=0, column=0, padx=5)
-        
-        ttk.Button(info_frame, text="Über",
-                  command=lambda: create_about_window(self.root),
-                  width=15).grid(row=0, column=1, padx=5)
 
 def main():
-    root = tk.Tk()
+    root = ctk.CTk()
     app = BuzeGUI(root)
     root.mainloop()
 

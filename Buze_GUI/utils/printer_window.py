@@ -1,47 +1,77 @@
-import tkinter as tk
-from tkinter import ttk, messagebox
+import customtkinter as ctk
+from tkinter import messagebox
 from utils.commands import run_command
 
-def create_printer_window(parent, selected_center, selected_center_full, printers, zentrum):
-    printer_window = tk.Toplevel(parent)
-    printer_window.title(f"Drucker für {selected_center_full}")
-    printer_window.geometry("400x300")
+def create_printer_window(parent, center, center_full, printers, zentrum):
+    printer_window = ctk.CTkToplevel(parent)
+    printer_window.title(f"Drucker für {center_full}")
+    printer_window.geometry("500x400")
+    printer_window.grab_set()  # Make window modal
     
-    frame = ttk.Frame(printer_window, padding="20")
-    frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+    # Main frame with padding
+    main_frame = ctk.CTkFrame(printer_window)
+    main_frame.pack(fill="both", expand=True, padx=20, pady=20)
     
-    ttk.Label(frame, text=f"Verfügbare Drucker in {selected_center_full}:", 
-             font=('Helvetica', 10, 'bold')).grid(row=0, column=0, pady=(0, 10))
+    # Title
+    ctk.CTkLabel(
+        main_frame,
+        text=f"Verfügbare Drucker für {center}",
+        font=ctk.CTkFont(size=16, weight="bold")
+    ).pack(pady=(0, 20))
     
-    printer_listbox = tk.Listbox(frame, selectmode=tk.MULTIPLE, width=40, height=10)
-    printer_listbox.grid(row=1, column=0, pady=(0, 10))
+    # Create scrollable frame for printers
+    scroll_frame = ctk.CTkScrollableFrame(main_frame)
+    scroll_frame.pack(fill="both", expand=True)
     
-    scrollbar = ttk.Scrollbar(frame, orient="vertical", command=printer_listbox.yview)
-    scrollbar.grid(row=1, column=1, sticky=(tk.N, tk.S))
-    printer_listbox.configure(yscrollcommand=scrollbar.set)
-    
+    # Checkboxes for printers
+    printer_vars = {}
     for printer in printers:
-        printer_listbox.insert(tk.END, printer)
+        var = ctk.BooleanVar()
+        printer_vars[printer] = var
+        
+        checkbox = ctk.CTkCheckBox(
+            scroll_frame,
+            text=printer,
+            variable=var,
+            font=ctk.CTkFont(size=12)
+        )
+        checkbox.pack(pady=5, padx=10, anchor="w")
     
-    def install_selected_printers():
-        selections = printer_listbox.curselection()
-        if not selections:
+    # Buttons frame
+    button_frame = ctk.CTkFrame(main_frame, fg_color="transparent")
+    button_frame.pack(fill="x", pady=(20, 0))
+    
+    # Select All button
+    def select_all():
+        for var in printer_vars.values():
+            var.set(True)
+    
+    ctk.CTkButton(
+        button_frame,
+        text="Alle auswählen",
+        command=select_all,
+        width=120,
+        height=32
+    ).pack(side="left", padx=5)
+    
+    # Install button
+    def install_printers():
+        selected = [printer for printer, var in printer_vars.items() if var.get()]
+        if not selected:
             messagebox.showwarning("Warnung", "Bitte wählen Sie mindestens einen Drucker aus.")
             return
         
-        server = f"n{zentrum.get()}"
-        success_count = 0
+        for printer in selected:
+            command = f'RUNDLL32 printui.dll,PrintUIEntry /in /n "\\\\{zentrum.get()}\\{printer}"'
+            run_command(command)
         
-        for index in selections:
-            printer_name = printer_listbox.get(index)
-            command = f'RUNDLL32 printui.dll,PrintUIEntry /in /n "\\\\{server}\\{printer_name}"'
-            if run_command(command):
-                success_count += 1
-        
-        if success_count > 0:
-            messagebox.showinfo("Erfolg", f"{success_count} Drucker wurde(n) erfolgreich hinzugefügt.")
+        messagebox.showinfo("Erfolg", "Die ausgewählten Drucker wurden installiert.")
         printer_window.destroy()
     
-    ttk.Button(frame, text="Ausgewählte Drucker installieren", 
-              command=install_selected_printers,
-              width=30).grid(row=2, column=0, pady=15) 
+    ctk.CTkButton(
+        button_frame,
+        text="Installieren",
+        command=install_printers,
+        width=120,
+        height=32
+    ).pack(side="right", padx=5) 

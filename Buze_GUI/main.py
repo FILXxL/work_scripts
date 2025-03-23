@@ -253,8 +253,13 @@ class BuzeGUI:
         if not self.check_zentrum_selected():
             return
         
-        run_command('net use M: /delete')
-        run_command('net use N: /delete')
+        import subprocess
+        # Silently try to delete existing mappings
+        subprocess.run('net use M: /delete', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        subprocess.run('net use N: /delete', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        success_messages = []
+        error_messages = []
         
         if self.zentrum.get() == "3000":  # Teesdorf
             run_command(f'net use M: \\\\n3000\\users\\{os.getenv("USERNAME")}')
@@ -263,7 +268,25 @@ class BuzeGUI:
             run_command(f'net use M: \\\\atlas\\ftusers\\{os.getenv("USERNAME")}')
             run_command(f'net use N: \\\\atlas\\ftgroups\\{self.zentrum.get()}')
         
-        messagebox.showinfo("Erfolg", "Netzwerklaufwerke M: und N: wurden eingerichtet.")
+        # Verify each drive mapping
+        if os.path.exists("M:\\"):
+            success_messages.append("M:")
+        else:
+            error_messages.append("M:")
+        
+        if os.path.exists("N:\\"):
+            success_messages.append("N:")
+        else:
+            error_messages.append("N:")
+        
+        # Show appropriate messages
+        if success_messages:
+            messagebox.showinfo("Erfolg", 
+                              f"Netzwerklaufwerk(e) {', '.join(success_messages)} wurde(n) erfolgreich eingerichtet.")
+        
+        if error_messages:
+            messagebox.showerror("Fehler", 
+                               f"Netzwerklaufwerk(e) {', '.join(error_messages)} konnte(n) nicht eingerichtet werden.")
     
     def create_kkm_link(self):
         if not self.check_zentrum_selected():

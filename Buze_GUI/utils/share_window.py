@@ -1,6 +1,7 @@
 import customtkinter as ctk # type: ignore
 from tkinter import messagebox
 from utils.commands import run_command
+from config.centers import ZENTRUM_MAP  # Add this import at the top
 
 def create_share_window(parent, center_names):
     share_window = ctk.CTkToplevel(parent)
@@ -55,7 +56,7 @@ def create_share_window(parent, center_names):
         import subprocess
         import os
         
-        selected = center_menu.get()[:3]
+        selected_abbr = center_menu.get()[:3]  # Gets "TDF", "LAA", etc.
         drive = drive_entry.get().strip()
         
         if not drive.endswith(':'):
@@ -65,19 +66,22 @@ def create_share_window(parent, center_names):
         subprocess.run(f'net use {drive} /delete', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         
         # Different path for Teesdorf
-        if selected == "TDF":
+        if selected_abbr == "TDF":
             share_path = "\\\\n3000\\tt"
         else:
-            share_path = f"\\\\atlas\\ftgroups\\{selected}"
+            # Get the center number from ZENTRUM_MAP
+            center_number = ZENTRUM_MAP[selected_abbr][0]  # This gets the center number
+            share_path = f"\\\\atlas\\ftgroups\\{center_number}"
         
-        # Try to map the new drive
-        run_command(f'net use {drive} "{share_path}"')
-        
-        # Verify the drive is actually mapped and accessible
-        if os.path.exists(f"{drive}\\"):
-            messagebox.showinfo("Erfolg", f"Zentrumsordner wurde als {drive} verbunden.")
-            share_window.destroy()
-        else:
+        try:
+            subprocess.run(f'net use {drive} "{share_path}"', shell=True, check=True)
+            
+            if os.path.exists(f"{drive}\\"):
+                messagebox.showinfo("Erfolg", f"Zentrumsordner wurde als {drive} verbunden.")
+                share_window.destroy()
+            else:
+                messagebox.showerror("Fehler", f"Zentrumsordner konnte nicht als {drive} verbunden werden.")
+        except subprocess.CalledProcessError:
             messagebox.showerror("Fehler", f"Zentrumsordner konnte nicht als {drive} verbunden werden.")
     
     ctk.CTkButton(

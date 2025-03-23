@@ -21,8 +21,8 @@ class BuzeGUI:
         self.root.geometry("900x700")
         
         # Set initial theme and color
-        ctk.set_appearance_mode("light")  # Changed from "system" to "dark" as default
-        ctk.set_default_color_theme("green")
+        ctk.set_appearance_mode("light")
+        ctk.set_default_color_theme("theme/yellow.json")  # Changed from "green" to custom theme
         
         # Initialize variables
         self.zentrum = ctk.StringVar()

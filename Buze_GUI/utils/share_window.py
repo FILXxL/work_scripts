@@ -49,20 +49,36 @@ def create_share_window(parent, center_names):
     
     drive_entry = ctk.CTkEntry(drive_frame, width=50)
     drive_entry.pack(side="left")
-    drive_entry.insert(0, "X:")
     
     # Connect button
     def connect_share():
+        import subprocess
+        import os
+        
         selected = center_menu.get()[:3]
         drive = drive_entry.get().strip()
         
         if not drive.endswith(':'):
             drive += ':'
         
-        run_command(f'net use {drive} /delete')
-        if run_command(f'net use {drive} "\\\\atlas\\ftgroups\\{selected}"'):
+        # Silently try to delete existing mapping
+        subprocess.run(f'net use {drive} /delete', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        
+        # Different path for Teesdorf
+        if selected == "TDF":
+            share_path = "\\\\n3000\\tt"
+        else:
+            share_path = f"\\\\atlas\\ftgroups\\{selected}"
+        
+        # Try to map the new drive
+        run_command(f'net use {drive} "{share_path}"')
+        
+        # Verify the drive is actually mapped and accessible
+        if os.path.exists(f"{drive}\\"):
             messagebox.showinfo("Erfolg", f"Zentrumsordner wurde als {drive} verbunden.")
             share_window.destroy()
+        else:
+            messagebox.showerror("Fehler", f"Zentrumsordner konnte nicht als {drive} verbunden werden.")
     
     ctk.CTkButton(
         main_frame,

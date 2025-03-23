@@ -29,6 +29,8 @@ class BuzeGUI:
         
         # Override default colors for all widgets
         self.root._apply_appearance_mode = custom_color
+        
+        # Existing theme overrides
         ctk.ThemeManager.theme["CTkButton"]["fg_color"] = [custom_color, custom_color]
         ctk.ThemeManager.theme["CTkButton"]["hover_color"] = [self.adjust_color_brightness(custom_color, -20), 
                                                             self.adjust_color_brightness(custom_color, -20)]
@@ -41,6 +43,14 @@ class BuzeGUI:
         ctk.ThemeManager.theme["CTkOptionMenu"]["text_color"] = [text_color, text_color]
         
         ctk.ThemeManager.theme["CTkLabel"]["text_color"] = [text_color, text_color]
+        
+        # Add checkbox theme overrides
+        ctk.ThemeManager.theme["CTkCheckBox"]["fg_color"] = [custom_color, custom_color]
+        ctk.ThemeManager.theme["CTkCheckBox"]["hover_color"] = [self.adjust_color_brightness(custom_color, -20),
+                                                               self.adjust_color_brightness(custom_color, -20)]
+        ctk.ThemeManager.theme["CTkCheckBox"]["border_color"] = [text_color, text_color]
+        ctk.ThemeManager.theme["CTkCheckBox"]["text_color"] = [text_color, text_color]
+        ctk.ThemeManager.theme["CTkCheckBox"]["checkmark_color"] = [text_color, text_color]
         
         # Initialize variables
         self.zentrum = ctk.StringVar()

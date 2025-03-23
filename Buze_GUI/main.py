@@ -245,8 +245,8 @@ class BuzeGUI:
         current_pc = os.getenv('COMPUTERNAME')
         if current_pc not in KKM_LICENSED_PCS:
             response = messagebox.askyesno(
-                "Warning",
-                "This PC is not in the list of KKM licensed computers.\nDo you want to continue anyway?"
+                "Achtung",
+                "Dieser PC hat KEINE KKM Lizenz.\nMöchtest du trotzdem fortfahren?"
             )
             if not response:
                 return
@@ -313,7 +313,7 @@ drivestoredirect:s:"""
     
     def check_zentrum_selected(self):
         if not self.zentrum_combo.get():
-            messagebox.showwarning("Warnung", "Bitte wählen Sie zuerst ein Zentrum aus.")
+            messagebox.showwarning("Warnung", "Bitte wähle zuerst ein Zentrum aus.")
             return False
         return True
 

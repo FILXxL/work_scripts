@@ -3,7 +3,7 @@ import customtkinter as ctk # type: ignore
 def create_help_window(parent):
     help_window = ctk.CTkToplevel(parent)
     help_window.title("Hilfe")
-    help_window.geometry("600x520")
+    help_window.geometry("600x700")
     help_window.grab_set()  # Make window modal
     
     # Main frame with padding
@@ -19,7 +19,7 @@ def create_help_window(parent):
     
     # Create scrollable frame for content
     scroll_frame = ctk.CTkScrollableFrame(main_frame)
-    scroll_frame.pack(fill="both", expand=True)
+    scroll_frame.pack(fill="both", expand=True, pady=(0, 20))
     
     help_text = """
     1. Zentrum auswählen
@@ -65,7 +65,7 @@ E-Mail: philipp.janicek@oeamtc.at
         font=ctk.CTkFont(size=12),
         justify="left",
         wraplength=520
-    ).pack(padx=10, pady=10)
+    ).pack(padx=10, pady=(10, 20))
     
     # Close button
     ctk.CTkButton(
@@ -74,12 +74,12 @@ E-Mail: philipp.janicek@oeamtc.at
         command=help_window.destroy,
         width=120,
         height=32
-    ).pack(pady=(20, 0))
+    ).pack(pady=(0, 20))
 
 def create_about_window(parent):
     about_window = ctk.CTkToplevel(parent)
     about_window.title("Über")
-    about_window.geometry("600x520")
+    about_window.geometry("600x600")
     about_window.grab_set()  # Make window modal
     
     # Main frame with padding
@@ -115,7 +115,7 @@ def create_about_window(parent):
     Entwickelt von:
     Hugo Janicek
     EDV&Systeme
-    ÖAMTC Fahrtechnik
+    ÖAMTC Fahrtechnik GmbH
 
 
     Alle Rechte vorbehalten.
@@ -128,7 +128,7 @@ def create_about_window(parent):
         font=ctk.CTkFont(size=14),
         justify="center",
         wraplength=400
-    ).pack(pady=20, expand=True)
+    ).pack(pady=(20, 40))
     
     # Close button
     ctk.CTkButton(
@@ -137,4 +137,4 @@ def create_about_window(parent):
         command=about_window.destroy,
         width=120,
         height=32
-    ).pack(pady=(20, 0)) 
+    ).pack(pady=(0, 20)) 

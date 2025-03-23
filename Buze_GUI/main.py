@@ -29,6 +29,10 @@ class BuzeGUI:
         self.root.title("ÖAMTC Fahrtechnik Onboarding")
         self.root.geometry("900x620")
         
+        # Set window icon
+        icon_path = resource_path("favicon.ico")
+        self.root.iconbitmap(icon_path)
+        
         # Set initial theme and color
         ctk.set_appearance_mode("light")
         ctk.set_default_color_theme(resource_path("theme/yellow.json"))
@@ -101,6 +105,9 @@ class BuzeGUI:
             width=300
         )
         self.zentrum_combo.grid(row=0, column=1, padx=5)
+        
+        # Trigger the callback for the initial value
+        self.on_zentrum_select(self.zentrum_combo.get())
     
     def setup_action_buttons(self, main_frame):
         buttons_frame = ctk.CTkFrame(main_frame)

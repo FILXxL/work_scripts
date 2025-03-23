@@ -1,4 +1,4 @@
-import customtkinter as ctk
+import customtkinter as ctk # type: ignore
 
 def create_help_window(parent):
     help_window = ctk.CTkToplevel(parent)

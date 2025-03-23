@@ -1,4 +1,4 @@
-import customtkinter as ctk
+import customtkinter as ctk # type: ignore
 from tkinter import messagebox
 from utils.commands import run_command
 

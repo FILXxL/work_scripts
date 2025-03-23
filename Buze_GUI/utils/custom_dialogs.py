@@ -1,4 +1,4 @@
-import customtkinter as ctk
+import customtkinter as ctk # type: ignore
 
 class CustomInputDialog:
     def __init__(self, parent, title, label_text):

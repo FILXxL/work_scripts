@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 import sys
 import psutil  # Add this import # type: ignore
+import subprocess
 
 from config.centers import CENTER_NAMES, ZENTRUM_MAP
 from config.printers import CENTER_PRINTERS
@@ -201,10 +202,19 @@ class BuzeGUI:
         
         drive_letter = dialog.result
         if drive_letter:
-            run_command(f'net use {drive_letter} /delete', shell=True)
-            if run_command(f'net use {drive_letter} "\\\\n3000\\tt\\VERTRIEB  NFZ chg"'):
+            # Silently try to delete existing mapping
+            subprocess.run(f'net use {drive_letter} /delete', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            
+            # Try to map the new drive
+            run_command(f'net use {drive_letter} "\\\\n3000\\tt\\VERTRIEB  NFZ chg"')
+            
+            # Verify the drive is actually mapped and accessible
+            if os.path.exists(f"{drive_letter}\\"):
                 messagebox.showinfo("Erfolg", 
                                   f"Vertriebsordner wurde als {drive_letter} eingerichtet.")
+            else:
+                messagebox.showerror("Fehler", 
+                                   f"Vertriebsordner konnte nicht als {drive_letter} eingerichtet werden.")
     
     def setup_scan(self):
         if not self.check_zentrum_selected():
@@ -222,10 +232,19 @@ class BuzeGUI:
         
         drive_letter = dialog.result
         if drive_letter:
-            run_command(f'net use {drive_letter} /delete')
-            if run_command(f'net use {drive_letter} "{self.scanfolder.get()}"'):
+            # Silently try to delete existing mapping
+            subprocess.run(f'net use {drive_letter} /delete', shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            
+            # Try to map the new drive
+            run_command(f'net use {drive_letter} "{self.scanfolder.get()}"')
+            
+            # Verify the drive is actually mapped and accessible
+            if os.path.exists(f"{drive_letter}\\"):
                 messagebox.showinfo("Erfolg", 
                                   f"Scanordner wurde als {drive_letter} eingerichtet.")
+            else:
+                messagebox.showerror("Fehler", 
+                                   f"Scanordner konnte nicht als {drive_letter} eingerichtet werden.")
     
     def create_desktop_links(self):
         create_shortcut_window(self.root)

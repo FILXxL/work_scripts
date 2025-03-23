@@ -22,9 +22,9 @@ class BuzeGUI:
         
         # Set theme and color
         ctk.set_appearance_mode("light")  # Options: "light", "dark", "system"
-        # Remove the default blue theme
         # Create custom color theme
         custom_color = "#F9EA3E"
+        text_color = "black"
         ctk.set_default_color_theme("blue")  # We'll override the colors below
         
         # Override default colors for all widgets
@@ -32,10 +32,15 @@ class BuzeGUI:
         ctk.ThemeManager.theme["CTkButton"]["fg_color"] = [custom_color, custom_color]
         ctk.ThemeManager.theme["CTkButton"]["hover_color"] = [self.adjust_color_brightness(custom_color, -20), 
                                                             self.adjust_color_brightness(custom_color, -20)]
+        ctk.ThemeManager.theme["CTkButton"]["text_color"] = [text_color, text_color]
+        
         ctk.ThemeManager.theme["CTkOptionMenu"]["fg_color"] = [custom_color, custom_color]
         ctk.ThemeManager.theme["CTkOptionMenu"]["button_color"] = [custom_color, custom_color]
         ctk.ThemeManager.theme["CTkOptionMenu"]["button_hover_color"] = [self.adjust_color_brightness(custom_color, -20),
                                                                         self.adjust_color_brightness(custom_color, -20)]
+        ctk.ThemeManager.theme["CTkOptionMenu"]["text_color"] = [text_color, text_color]
+        
+        ctk.ThemeManager.theme["CTkLabel"]["text_color"] = [text_color, text_color]
         
         # Initialize variables
         self.zentrum = ctk.StringVar()

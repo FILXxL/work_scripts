@@ -2,6 +2,7 @@ import customtkinter as ctk # type: ignore
 from tkinter import messagebox, simpledialog
 import os
 from pathlib import Path
+import sys
 
 from config.centers import CENTER_NAMES, ZENTRUM_MAP
 from config.printers import CENTER_PRINTERS
@@ -14,6 +15,13 @@ from utils.info_windows import create_help_window, create_about_window
 from utils.shortcut_window import create_shortcut_window
 from utils.custom_dialogs import CustomInputDialog
 
+def resource_path(relative_path):
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
 class BuzeGUI:
     def __init__(self, root):
         self.root = root
@@ -22,7 +30,7 @@ class BuzeGUI:
         
         # Set initial theme and color
         ctk.set_appearance_mode("light")
-        ctk.set_default_color_theme("theme/yellow.json")  # Changed from "green" to custom theme
+        ctk.set_default_color_theme(resource_path("theme/yellow.json"))
         
         # Initialize variables
         self.zentrum = ctk.StringVar()
